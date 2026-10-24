@@ -6,7 +6,7 @@ if(TakeItems_Explosions <= 0){
 	TakeItems_ShowShield = false;
 	TakeItems_ShowBag = false;
 	Lighting_UpdateLight_Visible(RoomIndex, LightIndex, false);
-	Inventory_ClearAll();
+	//Aghanim no longer strips the palyer's items and gear. Original Call -> Inventory_ClearAll();
 	alarm[10] = 30;
 }else{
 	alarm[9] = TakeItems_ExplosionDelay;

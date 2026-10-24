@@ -1,75 +1,13 @@
 event_inherited();
 
-var i = 0;
-
-Script[i++] = [AghanimScript.Pause, 20];
-Script[i++] = [AghanimScript.Move, [0,1,2,3,4,5,6,7,8]];
-Script[i++] = [AghanimScript.Pause, 20];
-Script[i++] = [AghanimScript.ChargeLR, 30];
-Script[i++] = [AghanimScript.Shoot, AghanimWeapon.EnergyBall];
-Script[i++] = [AghanimScript.Pause, 10];
-Script[i++] = [AghanimScript.Move, [0,2,3,4,5,6,7,8]];
-Script[i++] = [AghanimScript.Pause, 20];
-Script[i++] = [AghanimScript.ChargeLR, 30];
-Script[i++] = [AghanimScript.Shoot, AghanimWeapon.EnergyBall];
-Script[i++] = [AghanimScript.Pause, 10];
-Script[i++] = [AghanimScript.Move, [1]];
-Script[i++] = [AghanimScript.Pause, 10];
-Script[i++] = [AghanimScript.Bombs, 0]; 
-Script[i++] = [AghanimScript.Pause, 75];
-Script[i++] = [AghanimScript.Move, [0,2]];
-Script[i++] = [AghanimScript.Pause, 20];
-Script[i++] = [AghanimScript.ChargeL, 15];
-Script[i++] = [AghanimScript.Shoot, AghanimWeapon.BlueBalls];
-Script[i++] = [AghanimScript.Pause, 12];
-Script[i++] = [AghanimScript.ChargeR, 15];
-Script[i++] = [AghanimScript.Shoot, AghanimWeapon.BlueBalls];
-Script[i++] = [AghanimScript.Pause, 12];
-Script[i++] = [AghanimScript.ChargeL, 15];
-Script[i++] = [AghanimScript.Shoot, AghanimWeapon.BlueBalls];
-Script[i++] = [AghanimScript.Pause, 12];
-Script[i++] = [AghanimScript.ChargeR, 15];
-Script[i++] = [AghanimScript.Shoot, AghanimWeapon.BlueBalls];
-Script[i++] = [AghanimScript.Pause, 20];
-Script[i++] = [AghanimScript.Move, [0,2,3,4,5,6,8]];
-Script[i++] = [AghanimScript.Pause, 20];
-Script[i++] = [AghanimScript.ChargeLR, 30];
-Script[i++] = [AghanimScript.Shoot, AghanimWeapon.EnergyBall];
-Script[i++] = [AghanimScript.Pause, 10];
-Script[i++] = [AghanimScript.Move, [1]];
-Script[i++] = [AghanimScript.Pause, 10];
-Script[i++] = [AghanimScript.Bombs, 0]; 
-Script[i++] = [AghanimScript.Pause, 75];
-
-Script[i++] = [AghanimScript.Move, [0,2]];
-Script[i++] = [AghanimScript.Pause, 20];
-Script[i++] = [AghanimScript.ChargeL, 15];
-Script[i++] = [AghanimScript.Shoot, AghanimWeapon.BlueBalls];
-Script[i++] = [AghanimScript.Pause, 12];
-Script[i++] = [AghanimScript.ChargeR, 15];
-Script[i++] = [AghanimScript.Shoot, AghanimWeapon.BlueBalls];
-Script[i++] = [AghanimScript.Pause, 12];
-Script[i++] = [AghanimScript.ChargeL, 15];
-Script[i++] = [AghanimScript.Shoot, AghanimWeapon.BlueBalls];
-Script[i++] = [AghanimScript.Pause, 12];
-Script[i++] = [AghanimScript.ChargeR, 15];
-Script[i++] = [AghanimScript.Shoot, AghanimWeapon.BlueBalls];
-
-Script[i++] = [AghanimScript.Pause, 20];
-
-Script[i++] = [AghanimScript.Move, [7]];
-Script[i++] = [AghanimScript.Pause, 20];
-Script[i++] = [AghanimScript.ChargeLR, 30];
-Script[i++] = [AghanimScript.GravityBall, 0];
-
-
-
 ScriptIndex = 0;
 ScriptNext = true;
-ScriptLen = array_length(Script);
-ScriptIndexBombMove = 0;
 
-Energy = 24;
+Energy = 32;
+Phase = 0;
+EnergyBallSpeed = 5;
+BlueBallSpeed = 5;
+Aghanim_BuildAttackPattern(id);
 
 State = EnemyState.Standing;
 
@@ -125,7 +63,7 @@ Hit_Sound = Sound_Boss_Hit;
 Intro = true;
 
 IntroMsg1 = false;
-IntroMsg1Str = "Well well, if it isn't my old friend Link. You are foolish to have come here, I have grown more powerful since the last time you saw me. This time you don't stand a chance. Say goodbye to your precious items. MWAH HA HA!";
+IntroMsg1Str = "Well well, if it isn't my old friend Link. You are foolish to have come here, I have grown more powerful since the last time you saw me. This time you don't stand a chance. MWAH HA HA!";
 
 TakeItems = false;
 TakeItems_ShowBag = false;

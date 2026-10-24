@@ -5,6 +5,16 @@ y += vy;
 
 ObjSetY(y);
 
+//A reflected ball damages Aghanim like a sword beam would (Enemy_LinkWeaponHit
+//with the SwordBeam class), then disappears
+if(Reflected && instance_exists(oBoss_Aghanim)){
+	var _Boss = instance_place(x, y, oBoss_Aghanim);
+	if(_Boss != noone){
+		if(Enemy_LinkWeaponHit(LinkWeaponClass.SwordBeam, 0, _Boss,
+		x, y, point_direction(x, y, _Boss.x, _Boss.y))) instance_destroy(id);
+	}
+}
+
 
 switch(oBoss_Aghanim.EnergyBall_PalIndex){
 	case 0:

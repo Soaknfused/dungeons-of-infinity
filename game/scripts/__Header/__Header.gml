@@ -9,7 +9,7 @@
 
 
 
-#macro VERSION "1.2.2 CE"
+#macro VERSION "1.2.2 CE SOAK'S AGHA REWORK"
 
 
 #macro DEBUG false

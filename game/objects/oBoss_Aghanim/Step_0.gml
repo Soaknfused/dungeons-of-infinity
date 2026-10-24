@@ -12,8 +12,7 @@ if(Intro){
 			with(oLink){
 				UpdateState(LinkState.Idle);
 			}
-			TakeItems = true;
-			alarm[7] = 30;
+			alarm[10] = 1;
 			IntroMsg1 = false;
 		}
 	}
@@ -76,7 +75,9 @@ if(Energy <= 4){
 	Hit_Sound = Sound_Boss_Destroy;
 }
 	
-if(State != EnemyState.Killed && Energy <= 0){
+//Dead when Energy is effectively 0: Sword hits can leave a tiny fraction over, which used to make him
+//un-killable without using a bomb.
+if(State != EnemyState.Killed && Energy <= EnemyEnergyConsideredDead){
 	
 	global.Time_PlayingTotalEnd = Time_PlayingTotal();
 	global.GameBeaten = true;
@@ -107,9 +108,17 @@ if(State != EnemyState.Killed && Energy <= 0){
 var _x, _y, Angle;
 if(State != EnemyState.Killed) PauseCheck
 
+//Rebuilds the attack list when the phase changes or at the start of each new cycle.
+//Also after every hit, so the order is reshuffled.
 if(ScriptNext){
 	
 	ScriptNext = false;
+	
+	var _NewPhase = Aghanim_GetPhase();
+	if(_NewPhase != Phase || ScriptIndex == 0){
+		Phase = _NewPhase;
+		Aghanim_BuildAttackPattern(id);
+	}
 	
 	var S = Script[ScriptIndex];
 	
@@ -216,8 +225,8 @@ if(ScriptNext){
 					
 					Angle = point_direction(_x, _y, oLink.x, oLink.y - 6);
 			
-					ShotInst.vx = lengthdir_x(ShootSpeed, Angle);
-					ShotInst.vy = lengthdir_y(ShootSpeed, Angle);
+					ShotInst.vx = lengthdir_x(EnergyBallSpeed, Angle);
+					ShotInst.vy = lengthdir_y(EnergyBallSpeed, Angle);
 					ShotInst.alarm[0] = ShotInst.TrailDelay;
 					
 					audio_play_sound(Sound_AghanimEnergyBeam, 1, false);
@@ -230,8 +239,8 @@ if(ScriptNext){
 			
 					Angle = point_direction(_x, _y, oLink.x, oLink.y - 6);
 			
-					ShotInst.vx = lengthdir_x(ShootSpeed, Angle);
-					ShotInst.vy = lengthdir_y(ShootSpeed, Angle);
+					ShotInst.vx = lengthdir_x(BlueBallSpeed, Angle);
+					ShotInst.vy = lengthdir_y(BlueBallSpeed, Angle);
 					
 					audio_play_sound(Sound_SwordBeam, 1, false);
 					

@@ -742,6 +742,27 @@ if(CheckCollision){
 		BoneInst.Destroyed = true;	
 		if(Sword_DoSwordPoke()) exit;
 	}
+	
+	
+	var _DbgBall = SwordCollision(oAghanim_EnergyBall);
+	
+	var BallInst = SwordCollision(oAghanim_EnergyBall);
+	
+	//Reflect Aghanim's Energy Balls
+	if(BallInst != noone && !BallInst.Reflected && (BallInst.vx != 0 || BallInst.vy != 0)
+	&& instance_exists(oBoss_Aghanim)){
+		with(BallInst){
+			//The ball now "belongs" to Link: It can no longer hurt him once reflected.
+			Reflected = true;
+			Enemy = false;
+			var _Angle = point_direction(x, y, oBoss_Aghanim.x, oBoss_Aghanim.y - 12);
+			var _Speed = point_distance(0, 0, vx, vy) * 1.2;
+			vx = lengthdir_x(_Speed, _Angle);
+			vy = lengthdir_y(_Speed, _Angle);
+			instance_create_layer(x, y, "ObjsHigher_Upper", oWallHit, {PlaySound: false});
+			audio_play_sound(Sound_Shield, 1, false);
+		}
+	}
 
 	
 	

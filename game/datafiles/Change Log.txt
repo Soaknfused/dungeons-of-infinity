@@ -1,5 +1,14 @@
 Change Log:
 
+Version 1.2.2 CE Soak's Agha Rework:
+Changes:
+-Aghanim no longer takes your items and equipment at the start of the fight.
+-Aghanim can now be hurt with the sword, and by reflecting his energy balls back at him with a sword swing. Bombs still work as well.
+-Hitting Aghanim directly with the sword shocks you unless you have the Dragon Sword or better
+-Removed bomb phase and forced pauses between phases. Aghanim's attacks now come in a random order, with energy balls, blue balls, and gravity ball.
+-Aghanim gets harder as his Energy drops: he waits less, shoots faster, and fires longer blue-ball volleys (in bursts in the last phase).
+-Aghanim's blue balls no longer knock you back as far (down from 42px of displacement to 30px of displacement)
+
 Version 1.2.1:
 
 Changes:

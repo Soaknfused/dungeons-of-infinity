@@ -120,7 +120,8 @@ function Enemies_InitData(){
 	EnemyDataInit(oBoss_Moldorm_BodyL,	    0,	0,	0,	0,	0,	[	0		,	H_ND	,	0		,	0		,	0		,	0		,	0		,	0		,	0		,	0		,	0		],	[0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0]);
 	EnemyDataInit(oBoss_Moldorm_BodyS,	    0,	0,	0,	0,	0,	[	0		,	H_ND	,	0		,	0		,	0		,	0		,	0		,	0		,	0		,	0		,	0		],	[0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0]);
 	EnemyDataInit(oBoss_Moldorm_Tail,		0,	0,	0,	0,	0,	[	0.5		,	H_ND	,	0.5		,	H_ND	,	H_ND	,	0		,	0.5		,	0.5		,	H_ND	,	0.5		,	0.5		],	[0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0]);
-	EnemyDataInit(oBoss_Aghanim,		   12,1.75,	0,	0,	0,	[[H_Sh,0]	,	H_ND	,	H_ND	,	H_ND	,	H_ND	,[4,0]		,	H_ND	,	H_ND	,	H_ND	,	H_ND	,	0		],	[0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0]);
+	//Sword now does normal damage to Aghanim (H_FF), bomb damage unchanged, reflected ball does 4 damage (USES SWORDBEAM CLASS).
+	EnemyDataInit(oBoss_Aghanim,		   12,1.75,	0,	0,	0,	[[H_FF,0]	,	H_ND	,	H_ND	,	H_ND	,	H_ND	,[4,0]		,	H_ND	,	H_ND	,	[4, 0]	,	H_ND	,	0		],	[0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0]);
 	
 	
 	EnemyDataInit(oEnemy_Bubble,		    0,	1,	0,	0,	5,	[[H_FF,0]	,	0		,	0		,	0		,	0		,	0		,	0		,	0		,[H_FF,0]	,	H_ST	,	H_Tr	],	[0,	0,	0,	0,	0,	0,	0,	2,	1,	1,	0,	1,	1]); 
@@ -355,7 +356,14 @@ function Enemy_LinkWeaponHit(_WeaponClass, _WeaponIndex, _EnemyInst, _x, _y, _Di
 				
 					case oEnemy_Wizzrobe:	Hit_LinkWeaponEffect = (State == EnemyState.Shooting ? Hit_LinkWeaponEffect[0] : Hit_LinkWeaponEffect[1]); break;
 					
-					case oBoss_Aghanim: Hit_LinkWeaponEffect = (State == EnemyState.Standing || State == EnemyState.Shooting? Hit_LinkWeaponEffect[0] : Hit_LinkWeaponEffect[1]); break;
+					case oBoss_Aghanim:
+						if(State == EnemyState.Standing || State == EnemyState.Shooting){
+							if(_WeaponClass == LinkWeaponClass.Sword && !SwordLevel(Swords.Dragon) && !oLink.Cape) Hit_LinkWeaponEffect = H_Sh;
+								else Hit_LinkWeaponEffect = Hit_LinkWeaponEffect[0];
+						}else{
+						Hit_LinkWeaponEffect = Hit_LinkWeaponEffect[1];
+						}
+						break;
 				}
 
 			
