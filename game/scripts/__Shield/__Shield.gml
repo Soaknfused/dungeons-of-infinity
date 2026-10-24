@@ -200,6 +200,11 @@ function Shield_Hit(_Inst, _x, _y){
 
 
 	switch(_Inst.object_index){
+		//Aghanim's projectiles ignore shields (you have to dodge or reflect them)
+		case oAghanim_EnergyBall:
+		case oAghanim_NewBlueBall:
+		case oAghanim_GravityBall:
+			return false;
 		case oBone:
 		case oRock:
 		case oRedBall:
