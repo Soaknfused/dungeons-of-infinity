@@ -16,6 +16,7 @@ Borderless = ini_read_real("Screen", "Borderless", false);
 global.Fullscreen = ini_read_real("Screen", "Fullscreen", 1) == 1 ? true : false;
 global.MusicVol = ini_read_real("Audio", "MusicVol", 0.7);
 global.SFXVol = ini_read_real("Audio", "SFXVol", 1.0);
+global.CheatsEnabled = false;
 
 global.Gamepad_AnalogueThreshold = ini_read_real("Controls", "AnalogueThreshold", 0.4);
 
