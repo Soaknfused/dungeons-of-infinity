@@ -163,18 +163,26 @@ function Aghanim_TakingItems(){
 	
 }
 
-// @description Works out how far into the fight the player is from Aghanim's remaining Energy
-// @returns {Real} Phase from 0 to 3.
+// How much of Link's defense Aghanim's projectiles ignore. 0 = normal defense, 1 = defense does nothing.
+#macro AGHANIM_DEFENSE_BYPASS 0.75
+
+/// @description Raises a projectile's damage so Link's defense counts for less against Aghanim.
+function Aghanim_ProjectileDamage(_Base){
+	return _Base + oLink.DefensePoints * 0.25 * AGHANIM_DEFENSE_BYPASS;
+}
+
+/// @description Works out how far into the fight the player is from Aghanim's remaining Energy
+/// @returns {Real} Phase from 0 to 3.
 function Aghanim_GetPhase(){
 	//0 = full hp... 3= nearly dead. Based on Energy so it works with any damage source.
 	return clamp(floor((32 - Energy) / 8), 0, 3);
 }
 
-// @description Builds Aghanim's attack list (the Script array) for the current phase. Each cycle
-// has a fixed number of energy ball, blueball, and gravity ball attacks, shuffled into a random order.
-// Later phases shoot faster, wait less, and fire longer blue-ball volleys (bursts of 3 in the last phase).
-// All the tuning numbers are in the tables at the top of this function.
-// @param {Id.Insance} _Inst the boss instance to build the list on.
+/// @description Builds Aghanim's attack list (the Script array) for the current phase. Each cycle
+/// has a fixed number of energy ball, blueball, and gravity ball attacks, shuffled into a random order.
+/// Later phases shoot faster, wait less, and fire longer blue-ball volleys (bursts of 3 in the last phase).
+/// All the tuning numbers are in the tables at the top of this function.
+/// @param {Id.Insance} _Inst the boss instance to build the list on.
 
 function Aghanim_BuildAttackPattern(_Inst){
 

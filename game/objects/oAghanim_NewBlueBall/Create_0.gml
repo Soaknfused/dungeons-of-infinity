@@ -7,7 +7,8 @@ DestroyAnimation = true;
 
 Enemy = true;
 
-Damage = 1;
+//Damage = 1;
+Damage = Aghanim_ProjectileDamage(1);
 
 //Softer knockback than the original (was HitV 3, HitTime 14)
 //so one hit doesn't guarantee you fall off the floor

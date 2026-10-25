@@ -1,5 +1,13 @@
 Change Log:
 
+Version 1.2.2.1 CE Soak's Agha Rework:
+Changes:
+-Tweaked Aghanim damage so it feels like the challenge is mostly the same regardless of player equipment.
+
+Bug Fixes:
+-Shields no longer block Aghanim's projectiles
+-Holding the sword out in the sword poke stance no longer reflects his energy balls.
+
 Version 1.2.2 CE Soak's Agha Rework:
 Changes:
 -Aghanim no longer takes your items and equipment at the start of the fight.

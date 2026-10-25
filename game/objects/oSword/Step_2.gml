@@ -744,9 +744,9 @@ if(CheckCollision){
 	}
 	
 	
-	var _DbgBall = SwordCollision(oAghanim_EnergyBall);
-	
-	var BallInst = SwordCollision(oAghanim_EnergyBall);
+	//Only reflect Aghanim's Energy Balls a real sword swings or during a spin attack.
+	var _RealSwing = (oLink.State == LinkState.Sword || oLink.State == LinkState.SwordSpin);
+	var BallInst = _RealSwing ? SwordCollision(oAghanim_EnergyBall) : noone;
 	
 	//Reflect Aghanim's Energy Balls
 	if(BallInst != noone && !BallInst.Reflected && (BallInst.vx != 0 || BallInst.vy != 0)

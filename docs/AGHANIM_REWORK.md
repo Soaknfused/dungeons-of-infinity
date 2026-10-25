@@ -27,6 +27,8 @@ GameMaker (GML). "Object" means a GameMaker object such as `oBoss_Aghanim`; "eve
 | Shock rule | Hitting him directly with the sword shocks you unless you have the Dragon sword or better, or the Cape. |
 | Reflecting | A real sword swing or spin sends his energy balls back at him. |
 | Attack pattern | No bomb phase. A shuffled mix of energy balls, blue balls and a gravity ball that scales with his health. |
+| Defense | His projectiles ignore part of Link's defense |(`AGHANIM_DEFENSE_BYPASS`), so a fully geared player still _feels_ the fight.
+| Shields | Shields no longer block his projectiles, forcing the player to dodge. |
 | Blue ball knockback | Softer, so one hit does not throw you off the floor. |
 | Death check | He dies when Energy is effectively zero, not only when it is exactly zero. |
 
@@ -38,7 +40,7 @@ GameMaker (GML). "Object" means a GameMaker object such as `oBoss_Aghanim`; "eve
 |---|---|
 | Boss object, fight loop | `objects/oBoss_Aghanim/Step_0.gml` |
 | Boss setup, starting Energy | `objects/oBoss_Aghanim/Create_0.gml` |
-| Step types (enum), phase logic, attack-pattern builder | `scripts/__Boss_Aghanim/__Boss_Aghanim.gml` |
+| Step types (enum), phase logic, attack-pattern builder, defense bypass | `scripts/__Boss_Aghanim/__Boss_Aghanim.gml` |
 | Intro dialogue and item-taking sequence | `objects/oBoss_Aghanim/Alarm_5` ... `Alarm_10`, `Step_0.gml` (the `if(Intro)` block) |
 | Old bomb phase (no longer used by the new patterns) | `objects/oBoss_Aghanim/Alarm_2.gml` |
 | Gravity ball ends | `objects/oBoss_Aghanim/Alarm_6.gml` |
@@ -49,6 +51,7 @@ GameMaker (GML). "Object" means a GameMaker object such as `oBoss_Aghanim`; "eve
 | Sword hitting a ball (the reflect) | `objects/oSword/Step_2.gml` |
 | How weapons hurt him, the shock rule | `scripts/__Enemies/__Enemies.gml` |
 | Damage the player takes from a projectile | `scripts/__Link/__Link.gml` (`LinkHit`, and the projectile check that calls it) |
+|Shield blocking| `scripts/__Shield/__Shield.gml`(`Shield_Hit`)
 
 ---
 
@@ -135,7 +138,7 @@ sword hits finish him. Do not change it back to an exact zero test.
 
 ## 6. Reflecting energy balls
 
-- `oSword/Step_2.gml`, inside `if(CheckCollision){`: finds an `oAghanim_EnergyBall` touching the sword. If it is not
+- `oSword/Step_2.gml`, inside `if(CheckCollision){`: finds an `oAghanim_EnergyBall` touching the sword. It only does this while Link is in a real swing (`LinkState.Sword`) or the spin attack (`LinkState.SwordSpin`), through the `_RealSwing` check. Holding the sword out while charging doesn't reflect. If the ball is not
   already reflected and is moving, it flips the ball:
   `Reflected = true`, `Enemy = false`, a new direction toward the boss, and a new speed.
 - `oAghanim_EnergyBall/Step_0.gml`: while `Reflected` is true, a ball that touches the boss hurts him (through
@@ -149,12 +152,27 @@ sword hits finish him. Do not change it back to an exact zero test.
 
 - Each projectile has `Damage`, `HitV` (push speed) and `HitTime` (push frames) in its `Create_0.gml`. Distance pushed
   is `HitV x HitTime` pixels. The blue ball was softened because in later phases you have to stand on the far side of the arena, and a full-strength push would carry Link off the floor.
-- The damage taken is worked out from `Damage` and the player's defense (`Enemy_Attack()`), with a small minimum, so a
-  heavily armored player still takes a little damage.
+- The damage taken is worked out from `Damage` and the player's defense (`Enemy_Attack()` in `__Enemies.gml`): `max(Damage - DefensePoints * 0.25, 0.125)`. Full gear is 8 defense points, which takes off 2.0. Left alone, this makes a fully geared player take the 0.125 minimum damage from most of his attacks.
+- **Defense bypass**. To keep the fight challenging for a geared player, his projectiles raise their own `Damage` so defense counts for less. `scripts/__Boss_Aghanim/__Boss_Aghanim.gml` has:
+
+ ```gml
+  #macro AGHANIM_DEFENSE_BYPASS 0.75
+  function Aghanim_ProjectileDamage(_Base){
+  	return _Base + oLink.DefensePoints * 0.25 * AGHANIM_DEFENSE_BYPASS;
+  }
+  ```
+  Each projectile's `Create_0.gml` sets `Damage = Aghanim_ProjectileDamage(<base>)`: 1.5 for the energy ball, 1 for the blue ball, and 3 for the gravity ball. The macro is a dial from 0 to 1. At 0, defense works as normal. At 1, defense does nothing against him and every player takes the base damage. At 0.75, a fully geared player should take around 1.0/0.5/2.5 from an energy/blue/gravity ball respectively.
 
 ---
 
-## 8. Intro and the removed item theft
+## 8. Shields
+
+`Shield_Hit()` in `scripts/__Shield/__Shield.gml` decides whether a projectile is blocked. Its `switch` only lists certain projectiles to check shield level, so anything not listed was being blocked by every shield. The Aghanim projectiles (`oAghanim_Energy Ball`, `oAghanim_NewBlueBall`, `oAghanim_GravityBall`) have their own `case` at the top that returns `false`, so the shield never blocks them and the hit goes through `LinkHit` as normal. Remove these cases if for some reason you want shields to block them again.
+
+
+---
+
+## 9. Intro and the removed item theft
 
 The intro dialogue lives in `Create_0.gml` (`IntroMsg1Str`, `IntroMsg2Str`) and the `Alarm_5` to `Alarm_10` chain. The
 original `Alarm_9.gml` called `Inventory_ClearAll()` to wipe the player's inventory; that call is removed. The bag and
@@ -164,7 +182,7 @@ version.
 
 ---
 
-## 9. Testing tips
+## 10. Testing tips
 
 - Give yourself a quick way to reach the boss floor and to choose your sword level.
 - Check the final phase: the fastest blue-ball bursts should ideally still be dodgeable.
@@ -173,9 +191,9 @@ version.
 
 ---
 
-## 10. Known limits
+## 11. Known limits
 
-- The numbers are tuned for a player with only the starting gear. A fully geared player would likely take very little damage and the fight would be easier; there is no scaling for the player's gear or health. Damage to Aghanim through reflected Energy Balls is static at 4 (this can be tweaked in `__Enemies.gml`)
-- The attacks are random, so occasionally the same attack happens twice or more in a row.
-- Blue balls and the gravity ball cannot be reflected.
-- Old unused code from the original (bomb phase, item taking) is still in the project if you want to add those back in.
+-The numbers are tuned for a player with little gear, and the defense bypass makes a geared player feel the fight more, but there is no scaling for the player's health or strength level. A strong sword will still kill him in fewer hits, and extra hearts still give a large buffer. Damage to Aghanim through reflected energy balls is static at 4(this can be tweaked in `__Enemies.gml`)
+-Attacks are random, so occasionally the same attack happens multiple times in a row.
+-Blue balls can't be reflected.
+-Old unused code from the original (bomb phase, item taking) is still within the project if you want to add those back in.

@@ -5,7 +5,8 @@ FloorLevel = UPPER;
 Enemy = true;
 LinkTouchDestroy = false;
 
-Damage = 3;
+//Damage = 3;
+Damage = Aghanim_ProjectileDamage(3)
 
 HitV = 3;
 HitTime = 12;

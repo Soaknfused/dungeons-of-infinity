@@ -7,7 +7,8 @@ DestroyAnimation = true;
 
 Enemy = true;
 
-Damage = 1.5;
+//Damage = 1.5;
+Damage = Aghanim_ProjectileDamage(1.5)
 
 HitV = 4;
 HitTime = 16;
